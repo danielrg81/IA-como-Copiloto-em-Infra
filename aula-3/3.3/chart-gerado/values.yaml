@@ -1,0 +1,48 @@
+app:
+  name: order-api
+  team: platform
+
+replicaCount: 2
+
+image:
+  repository: hashicorp/http-echo
+  tag: "0.2.3"
+
+containerPort: 5678
+
+args:
+  - "-text=order-api running"
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+probes:
+  liveness:
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  readiness:
+    path: /
+    initialDelaySeconds: 3
+    periodSeconds: 5
+
+configMap:
+  enabled: true
+  data:
+    APP_ENV: production
+    LOG_LEVEL: info
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPU: 70
+
+ingress:
+  enabled: false
+  host: order-api.local

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-api
+  namespace: ai-iac-lab
+  labels:
+    app: order-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-api
+  template:
+    metadata:
+      labels:
+        app: order-api
+    spec:
+      containers:
+      - name: order-api
+        image: busybox
+        command: ["sh", "-c"]
+        args:
+        - |
+          while true; do
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) INFO  request: GET /orders 200 45ms"
+            sleep 2
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) INFO  request: GET /orders/123 200 38ms"
+            sleep 2
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) WARN  db query took 1200ms (threshold: 500ms) query=\"SELECT * FROM orders WHERE status='pending'\""
+            sleep 1
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) WARN  db connection pool: 9/10 connections in use"
+            sleep 1
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) WARN  db query took 3200ms (threshold: 500ms) query=\"SELECT * FROM orders JOIN items ON orders.id=items.order_id\""
+            sleep 1
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) ERROR timeout waiting for db connection (pool exhausted, 10/10 in use)"
+            sleep 1
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) ERROR request timeout: GET /orders (client disconnected after 30s)"
+            sleep 2
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) ERROR timeout waiting for db connection (pool exhausted, 10/10 in use)"
+            sleep 1
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) WARN  health check /healthz responded in 5200ms (threshold: 3000ms)"
+            sleep 2
+            echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) ERROR liveness probe failed: timeout"
+            sleep 5
+          done

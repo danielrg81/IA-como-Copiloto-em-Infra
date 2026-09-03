@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-api
+  namespace: ai-iac-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-api
+  template:
+    metadata:
+      labels:
+        app: order-api
+    spec:
+      containers:
+      - name: order-api
+        image: postgres:15
+        env:
+        - name: PGHOST
+          value: "localhost"
+        - name: PGPORT
+          value: "5432"
+        - name: PGUSER
+          value: "app"
+        - name: PGDATABASE
+          value: "orders"
+        command: ["sh", "-c"]
+        args:
+        - |
+          for i in 1 2 3 4 5; do
+            echo "$(date -Iseconds) ERROR connection refused localhost:5432"
+            echo "$(date -Iseconds) INFO retrying in 5s..."
+            sleep 5
+          done
+          echo "$(date -Iseconds) FATAL max retries exceeded, shutting down"
+          exit 1

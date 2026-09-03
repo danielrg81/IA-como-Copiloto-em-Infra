@@ -1,0 +1,4 @@
+apiVersion: v2
+name: conditional-app
+description: Chart com Ingress e HPA opcionais
+version: 0.1.0

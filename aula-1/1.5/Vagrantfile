@@ -1,0 +1,102 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+vhosts = [
+  { :hostname => "ai-iac-lab", :ip => "127.0.0.1", :fweb_port => "8060", :k8s_port => "6443" },
+]
+
+Vagrant.configure("2") do |config|
+
+  vhosts.each do |vhost|
+
+    config.vm.define vhost[:hostname] do |node|
+      node.vm.box = "bento/ubuntu-24.04"
+      node.vm.hostname = vhost[:hostname]
+      node.vm.boot_timeout = 3600
+
+      node.vm.network :forwarded_port, guest: 80, host: vhost[:fweb_port], host_ip: vhost[:ip], auto_correct: true
+      node.vm.network :forwarded_port, guest: 443, host: 8443, host_ip: vhost[:ip], auto_correct: true
+      node.vm.network :forwarded_port, guest: 6443, host: vhost[:k8s_port], host_ip: vhost[:ip], auto_correct: true
+      node.vm.network :forwarded_port, guest: 30000, host: 30000, host_ip: vhost[:ip], auto_correct: true
+      node.vm.network :forwarded_port, guest: 30001, host: 30001, host_ip: vhost[:ip], auto_correct: true
+      node.vm.network :forwarded_port, guest: 30002, host: 30002, host_ip: vhost[:ip], auto_correct: true
+
+      node.vm.synced_folder "./ai-iac-labs", "/home/vagrant/ai-iac-labs"
+      node.vm.synced_folder "./bin", "/home/vagrant/bin"
+
+      node.vm.provider :virtualbox do |v|
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        v.customize ["modifyvm", :id, "--memory", 2048]
+        v.customize ["modifyvm", :id, "--cpus", 2]
+        v.customize ["modifyvm", :id, "--name", vhost[:hostname] + "-VG-machine"]
+      end
+
+      node.vm.provision "shell", inline: <<-SHELL
+        set -e
+        export DEBIAN_FRONTEND=noninteractive
+
+        echo "=== Atualizando pacotes ==="
+        apt-get update -qq
+        apt-get install -y -qq curl git unzip jq
+
+        echo "=== Instalando k3s ==="
+        curl -sfL https://get.k3s.io | sh -
+        # Permitir uso sem sudo
+        mkdir -p /home/vagrant/.kube
+        cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
+        chown -R vagrant:vagrant /home/vagrant/.kube
+        chmod 600 /home/vagrant/.kube/config
+        echo 'export KUBECONFIG=/home/vagrant/.kube/config' >> /home/vagrant/.bashrc
+
+        echo "=== Instalando Helm ==="
+        curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+        echo "=== Instalando Terraform ==="
+        curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list
+        apt-get update -qq
+        apt-get install -y -qq terraform
+
+        echo "=== Instalando Node.js (para Kiro CLI) ==="
+        curl -fsSL https://fnm.vercel.app/install | bash
+        export PATH="/root/.local/share/fnm:$PATH"
+        eval "$(fnm env)"
+        fnm install --lts
+        # Disponibilizar para vagrant user
+        cp -r /root/.local/share/fnm /home/vagrant/.local/share/fnm 2>/dev/null || true
+        mkdir -p /home/vagrant/.local/share
+        cp -r /root/.local/share/fnm /home/vagrant/.local/share/
+        chown -R vagrant:vagrant /home/vagrant/.local
+        echo 'export PATH="/home/vagrant/.local/share/fnm:$PATH"' >> /home/vagrant/.bashrc
+        echo 'eval "$(fnm env)"' >> /home/vagrant/.bashrc
+
+        echo "=== Instalando Kiro CLI ==="
+        cp /home/vagrant/bin/kiro-cli /usr/local/bin/kiro-cli
+        chmod +x /usr/local/bin/kiro-cli
+
+        echo "=== Instalando Gemini CLI ==="
+        npm install -g @anthropic-ai/gemini-cli 2>/dev/null || \
+          npm install -g @google/gemini-cli 2>/dev/null || \
+          echo "NOTA: Instale o Gemini CLI manualmente. Verifique o pacote correto em https://ai.google.dev/gemini-api/docs"
+
+        echo "=== Aguardando k3s ficar pronto ==="
+        until kubectl get nodes --kubeconfig=/etc/rancher/k3s/k3s.yaml 2>/dev/null | grep -q " Ready"; do
+          sleep 2
+        done
+
+        echo "=== Validação ==="
+        echo "k3s:  $(k3s --version 2>&1 | head -1)"
+        echo "helm: $(helm version --short 2>&1)"
+        echo "node: $(node --version 2>&1 || echo 'verificar com vagrant user')"
+        echo ""
+        echo "============================================"
+        echo " Lab pronto! Acesse com: vagrant ssh"
+        echo " Depois configure:"
+        echo "   kiro auth"
+        echo "   export GEMINI_API_KEY=sua-chave"
+        echo "============================================"
+      SHELL
+    end
+  end
+
+end

@@ -1,0 +1,15 @@
+replicaCount: 2
+image:
+  repository: nginx
+  tag: "1.27-alpine"
+service:
+  type: ClusterIP
+  port: 80
+ingress:
+  enabled: true
+  host: app.local
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPU: 70

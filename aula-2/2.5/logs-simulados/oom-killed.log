@@ -1,0 +1,12 @@
+2024-03-15T14:00:00Z INFO  worker started, processing queue "emails"
+2024-03-15T14:00:01Z INFO  processed job id=1001 in 230ms
+2024-03-15T14:00:02Z INFO  processed job id=1002 in 180ms
+2024-03-15T14:00:03Z INFO  processed job id=1003 in 210ms
+2024-03-15T14:01:00Z WARN  memory usage at 78% (limit: 128Mi)
+2024-03-15T14:01:30Z WARN  memory usage at 85% (limit: 128Mi)
+2024-03-15T14:01:45Z WARN  memory usage at 91% (limit: 128Mi)
+2024-03-15T14:02:00Z ERROR memory usage at 97% (limit: 128Mi) — GC triggered
+2024-03-15T14:02:01Z INFO  GC completed, freed 12Mi, now at 86%
+2024-03-15T14:02:10Z WARN  memory usage at 92% (limit: 128Mi)
+2024-03-15T14:02:15Z ERROR memory usage at 99% (limit: 128Mi)
+2024-03-15T14:02:15Z FATAL OOMKilled by kernel

@@ -1,0 +1,17 @@
+2024-03-15T10:15:00Z INFO  request: GET /orders 200 45ms
+2024-03-15T10:15:02Z INFO  request: GET /orders/123 200 38ms
+2024-03-15T10:15:05Z INFO  request: POST /orders 201 120ms
+2024-03-15T10:18:01Z WARN  db query took 1200ms (threshold: 500ms) query="SELECT * FROM orders WHERE status='pending'"
+2024-03-15T10:18:03Z INFO  request: GET /orders 200 1350ms
+2024-03-15T10:18:10Z WARN  db query took 2400ms (threshold: 500ms) query="SELECT * FROM orders WHERE status='pending'"
+2024-03-15T10:18:12Z WARN  db connection pool: 9/10 connections in use
+2024-03-15T10:19:01Z WARN  db query took 3200ms (threshold: 500ms) query="SELECT * FROM orders JOIN items ON orders.id=items.order_id"
+2024-03-15T10:19:03Z ERROR timeout waiting for db connection (pool exhausted, 10/10 in use)
+2024-03-15T10:19:05Z WARN  db query took 4100ms (threshold: 500ms)
+2024-03-15T10:19:08Z ERROR timeout waiting for db connection (pool exhausted, 10/10 in use)
+2024-03-15T10:19:10Z ERROR request timeout: GET /orders (client disconnected after 30s)
+2024-03-15T10:19:15Z ERROR timeout waiting for db connection (pool exhausted, 10/10 in use)
+2024-03-15T10:19:18Z ERROR request timeout: GET /orders/456 (client disconnected after 30s)
+2024-03-15T10:19:20Z WARN  health check /healthz responded in 5200ms (threshold: 3000ms)
+2024-03-15T10:19:25Z ERROR liveness probe failed: timeout
+2024-03-15T10:19:25Z INFO  pod being restarted by kubelet

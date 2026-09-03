@@ -1,0 +1,4 @@
+apiVersion: v2
+name: basic-app
+description: App simples para lab de Helm no k3s
+version: 0.1.0

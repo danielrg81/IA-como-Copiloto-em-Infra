@@ -1,0 +1,4 @@
+apiVersion: v2
+name: multi-app
+description: Chart com helpers e loop de containers
+version: 0.1.0
