@@ -1,0 +1,550 @@
+{
+  "version": 4,
+  "terraform_version": "1.9.5",
+  "serial": 18,
+  "lineage": "3ddf0488-f10f-2f63-619f-6758489114cf",
+  "outputs": {
+    "deployment_name": {
+      "value": "order-api",
+      "type": "string"
+    },
+    "namespace": {
+      "value": "app-production",
+      "type": "string"
+    },
+    "service_endpoint": {
+      "value": "order-api.app-production.svc.cluster.local",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "kubernetes_config_map",
+      "name": "order_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/kubernetes\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "binary_data": {},
+            "data": {
+              "APP_ENV": "production",
+              "LOG_LEVEL": "info"
+            },
+            "id": "app-production/order-api-config",
+            "immutable": false,
+            "metadata": [
+              {
+                "annotations": {},
+                "generate_name": "",
+                "generation": 0,
+                "labels": {},
+                "name": "order-api-config",
+                "namespace": "app-production",
+                "resource_version": "8196",
+                "uid": "a47d589e-83c8-4285-b13c-ad7d3bb55009"
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ==",
+          "dependencies": [
+            "kubernetes_namespace.production"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "kubernetes_deployment",
+      "name": "order_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/kubernetes\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "id": "app-production/order-api",
+            "metadata": [
+              {
+                "annotations": {},
+                "generate_name": "",
+                "generation": 2,
+                "labels": {
+                  "app": "order-api",
+                  "environment": "production",
+                  "managed-by": "terraform"
+                },
+                "name": "order-api",
+                "namespace": "app-production",
+                "resource_version": "9934",
+                "uid": "f551094c-843b-4426-a177-6eaacbf2ca31"
+              }
+            ],
+            "spec": [
+              {
+                "min_ready_seconds": 0,
+                "paused": false,
+                "progress_deadline_seconds": 600,
+                "replicas": "2",
+                "revision_history_limit": 10,
+                "selector": [
+                  {
+                    "match_expressions": [],
+                    "match_labels": {
+                      "app": "order-api"
+                    }
+                  }
+                ],
+                "strategy": [
+                  {
+                    "rolling_update": [
+                      {
+                        "max_surge": "25%",
+                        "max_unavailable": "25%"
+                      }
+                    ],
+                    "type": "RollingUpdate"
+                  }
+                ],
+                "template": [
+                  {
+                    "metadata": [
+                      {
+                        "annotations": {},
+                        "generate_name": "",
+                        "generation": 0,
+                        "labels": {
+                          "app": "order-api",
+                          "environment": "production"
+                        },
+                        "name": "",
+                        "namespace": "",
+                        "resource_version": "",
+                        "uid": ""
+                      }
+                    ],
+                    "spec": [
+                      {
+                        "active_deadline_seconds": 0,
+                        "affinity": [],
+                        "automount_service_account_token": true,
+                        "container": [
+                          {
+                            "args": [],
+                            "command": [],
+                            "env": [],
+                            "env_from": [
+                              {
+                                "config_map_ref": [
+                                  {
+                                    "name": "order-api-config",
+                                    "optional": false
+                                  }
+                                ],
+                                "prefix": "",
+                                "secret_ref": []
+                              }
+                            ],
+                            "image": "nginx:1.25-alpine",
+                            "image_pull_policy": "IfNotPresent",
+                            "lifecycle": [],
+                            "liveness_probe": [
+                              {
+                                "exec": [],
+                                "failure_threshold": 3,
+                                "grpc": [],
+                                "http_get": [
+                                  {
+                                    "host": "",
+                                    "http_header": [],
+                                    "path": "/healthz",
+                                    "port": "80",
+                                    "scheme": "HTTP"
+                                  }
+                                ],
+                                "initial_delay_seconds": 5,
+                                "period_seconds": 10,
+                                "success_threshold": 1,
+                                "tcp_socket": [],
+                                "timeout_seconds": 1
+                              }
+                            ],
+                            "name": "order-api",
+                            "port": [
+                              {
+                                "container_port": 80,
+                                "host_ip": "",
+                                "host_port": 0,
+                                "name": "",
+                                "protocol": "TCP"
+                              }
+                            ],
+                            "readiness_probe": [],
+                            "resources": [
+                              {
+                                "limits": {
+                                  "cpu": "100m",
+                                  "memory": "128Mi"
+                                },
+                                "requests": {}
+                              }
+                            ],
+                            "security_context": [],
+                            "startup_probe": [],
+                            "stdin": false,
+                            "stdin_once": false,
+                            "termination_message_path": "/dev/termination-log",
+                            "termination_message_policy": "File",
+                            "tty": false,
+                            "volume_device": [],
+                            "volume_mount": [],
+                            "working_dir": ""
+                          }
+                        ],
+                        "dns_config": [],
+                        "dns_policy": "ClusterFirst",
+                        "enable_service_links": true,
+                        "host_aliases": [],
+                        "host_ipc": false,
+                        "host_network": false,
+                        "host_pid": false,
+                        "hostname": "",
+                        "image_pull_secrets": [],
+                        "init_container": [],
+                        "node_name": "",
+                        "node_selector": {},
+                        "os": [],
+                        "priority_class_name": "",
+                        "readiness_gate": [],
+                        "restart_policy": "Always",
+                        "runtime_class_name": "",
+                        "scheduler_name": "default-scheduler",
+                        "security_context": [],
+                        "service_account_name": "",
+                        "share_process_namespace": false,
+                        "subdomain": "",
+                        "termination_grace_period_seconds": 30,
+                        "toleration": [],
+                        "topology_spread_constraint": [],
+                        "volume": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "timeouts": null,
+            "wait_for_rollout": true
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "kubernetes_config_map.order_api",
+            "kubernetes_namespace.production"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "kubernetes_namespace",
+      "name": "production",
+      "provider": "provider[\"registry.terraform.io/hashicorp/kubernetes\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "app-production",
+            "metadata": [
+              {
+                "annotations": {},
+                "generate_name": "",
+                "generation": 0,
+                "labels": {
+                  "environment": "production",
+                  "managed-by": "terraform"
+                },
+                "name": "app-production",
+                "resource_version": "8184",
+                "uid": "bb043c02-039d-46f9-be32-bcbf0fd159e4"
+              }
+            ],
+            "timeouts": null,
+            "wait_for_default_service_account": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiZGVsZXRlIjozMDAwMDAwMDAwMDB9LCJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "kubernetes_resource_quota",
+      "name": "production",
+      "provider": "provider[\"registry.terraform.io/hashicorp/kubernetes\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "app-production/app-production-quota",
+            "metadata": [
+              {
+                "annotations": {},
+                "generate_name": "",
+                "generation": 0,
+                "labels": {},
+                "name": "app-production-quota",
+                "namespace": "app-production",
+                "resource_version": "8224",
+                "uid": "32d15e8b-64cd-4b95-b6a6-82da64da657e"
+              }
+            ],
+            "spec": [
+              {
+                "hard": {
+                  "limits.memory": "512Mi",
+                  "pods": "4"
+                },
+                "scope_selector": [],
+                "scopes": []
+              }
+            ],
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMCwidXBkYXRlIjo2MDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMCJ9",
+          "dependencies": [
+            "kubernetes_namespace.production"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "kubernetes_role",
+      "name": "order_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/kubernetes\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "app-production/order-api-role",
+            "metadata": [
+              {
+                "annotations": {},
+                "generate_name": "",
+                "generation": 0,
+                "labels": {},
+                "name": "order-api-role",
+                "namespace": "app-production",
+                "resource_version": "9816",
+                "uid": "0a9dd572-8123-4e4a-837d-3b1b9d35a76b"
+              }
+            ],
+            "rule": [
+              {
+                "api_groups": [
+                  ""
+                ],
+                "resource_names": [],
+                "resources": [
+                  "configmaps",
+                  "secrets"
+                ],
+                "verbs": [
+                  "get",
+                  "list"
+                ]
+              },
+              {
+                "api_groups": [
+                  ""
+                ],
+                "resource_names": [],
+                "resources": [
+                  "pods"
+                ],
+                "verbs": [
+                  "get",
+                  "list",
+                  "watch"
+                ]
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "kubernetes_namespace.production"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "kubernetes_role_binding",
+      "name": "order_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/kubernetes\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "app-production/order-api-rolebinding",
+            "metadata": [
+              {
+                "annotations": {},
+                "generate_name": "",
+                "generation": 0,
+                "labels": {},
+                "name": "order-api-rolebinding",
+                "namespace": "app-production",
+                "resource_version": "9818",
+                "uid": "b8e9584d-ffba-4d93-889c-d832fc3ed532"
+              }
+            ],
+            "role_ref": [
+              {
+                "api_group": "rbac.authorization.k8s.io",
+                "kind": "Role",
+                "name": "order-api-role"
+              }
+            ],
+            "subject": [
+              {
+                "api_group": "",
+                "kind": "ServiceAccount",
+                "name": "order-api-sa",
+                "namespace": "app-production"
+              }
+            ]
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "kubernetes_namespace.production",
+            "kubernetes_role.order_api",
+            "kubernetes_service_account.order_api"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "kubernetes_service",
+      "name": "order_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/kubernetes\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "id": "app-production/order-api",
+            "metadata": [
+              {
+                "annotations": {},
+                "generate_name": "",
+                "generation": 0,
+                "labels": {},
+                "name": "order-api",
+                "namespace": "app-production",
+                "resource_version": "8198",
+                "uid": "53624b6f-b5a0-4cce-ae42-0144343ce79a"
+              }
+            ],
+            "spec": [
+              {
+                "allocate_load_balancer_node_ports": true,
+                "cluster_ip": "10.43.68.220",
+                "cluster_ips": [
+                  "10.43.68.220"
+                ],
+                "external_ips": [],
+                "external_name": "",
+                "external_traffic_policy": "",
+                "health_check_node_port": 0,
+                "internal_traffic_policy": "Cluster",
+                "ip_families": [
+                  "IPv4"
+                ],
+                "ip_family_policy": "SingleStack",
+                "load_balancer_class": "",
+                "load_balancer_ip": "",
+                "load_balancer_source_ranges": [],
+                "port": [
+                  {
+                    "app_protocol": "",
+                    "name": "",
+                    "node_port": 0,
+                    "port": 80,
+                    "protocol": "TCP",
+                    "target_port": "80"
+                  }
+                ],
+                "publish_not_ready_addresses": false,
+                "selector": {
+                  "app": "order-api"
+                },
+                "session_affinity": "None",
+                "session_affinity_config": [],
+                "type": "ClusterIP"
+              }
+            ],
+            "status": [
+              {
+                "load_balancer": [
+                  {
+                    "ingress": []
+                  }
+                ]
+              }
+            ],
+            "timeouts": null,
+            "wait_for_load_balancer": true
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDB9LCJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "kubernetes_namespace.production"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "kubernetes_service_account",
+      "name": "order_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/kubernetes\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "automount_service_account_token": true,
+            "default_secret_name": "",
+            "id": "app-production/order-api-sa",
+            "image_pull_secret": [],
+            "metadata": [
+              {
+                "annotations": {},
+                "generate_name": "",
+                "generation": 0,
+                "labels": {},
+                "name": "order-api-sa",
+                "namespace": "app-production",
+                "resource_version": "9814",
+                "uid": "77c6671f-6b2b-4bba-b53e-df2eb2dba8df"
+              }
+            ],
+            "secret": [],
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "kubernetes_namespace.production"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
