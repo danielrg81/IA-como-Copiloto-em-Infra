@@ -1,0 +1,11 @@
+# Ignorar arquivos de estado local do Terraform
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Ignorar a pasta de plugins baixados pelo terraform init
+.terraform/
+
+# Ignorar arquivos de variáveis que possam conter segredos
+*.tfvars
+*.tfvars.json
